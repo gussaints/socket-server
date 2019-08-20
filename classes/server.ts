@@ -30,19 +30,18 @@ export default class Server {
     }
 
     private escucharSockets( ){
-        console.log( 'Escuchando conexiones - sockets' );
-        this.io.on( 'connection', cliente => {
-            console.log( 'cliente conectado' );
 
+        this.io.on( 'connection', cliente => {
+
+            // Conectar cliente
+            socketMine.conectarCliente( cliente );
             // Mensajes
             socketMine.msg( cliente, this.io );
             // Desconectar
             socketMine.desconectar( cliente );
+            // configurando usuario
+            socketMine.configUser( cliente, this.io );
             
-            // cliente.on( 'disconnect', ( ) => {
-            //     console.log( 'Cliente desconectado' );
-                
-            // });
         })
     }
 
