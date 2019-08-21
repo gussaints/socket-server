@@ -27,13 +27,14 @@ export class UsersList {
 
         console.log( '==== Actualizando usuario ====' );
         console.log( user );
+        console.log( '==== Actualizando lista ====' );
         console.log( this.list );
         return user;
     }
 
     // Obtener lista de usuarios
     public getList( ){
-        return this.list;
+        return this.list.filter( user => user.name !== 'no-name' );
     }
 
     // Obtener un usuario

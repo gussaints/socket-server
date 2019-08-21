@@ -34,13 +34,15 @@ export default class Server {
         this.io.on( 'connection', cliente => {
 
             // Conectar cliente
-            socketMine.conectarCliente( cliente );
+            socketMine.conectarCliente( cliente, this.io );
             // Mensajes
             socketMine.msg( cliente, this.io );
             // Desconectar
-            socketMine.desconectar( cliente );
+            socketMine.desconectar( cliente, this.io );
             // configurando usuario
             socketMine.configUser( cliente, this.io );
+            // obtener usuarios
+            socketMine.getUsersByOne( cliente, this.io );
             
         })
     }

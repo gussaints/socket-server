@@ -5,15 +5,16 @@ import { User } from "../classes/user";
 
 export const usuariosConectados = new UsersList( );
 
-export const conectarCliente = ( cliente: Socket ) => {
+export const conectarCliente = ( cliente: Socket, io: socketIO.Server ) => {
     const user = new User( cliente.id );
     usuariosConectados.addUser( user );
 }
 
-export const desconectar = ( cliente: Socket ) => {
+export const desconectar = ( cliente: Socket, io: socketIO.Server ) => {
     cliente.on( 'disconnect', ( ) => {
         usuariosConectados.delUser( cliente.id );
-        console.log( 'Cliente desconectado' ); 
+        console.log( 'Cliente desconectado' );
+        io.emit( 'usuarios-activos', usuariosConectados.getList( ) );
     });
 }
 
@@ -25,13 +26,36 @@ export const msg = ( cliente: Socket, io: socketIO.Server ) => {
     })
 }
 
+// Configurar nombre usuario
 export const configUser = ( cliente: Socket, io: socketIO.Server ) => {
     cliente.on( 'configurar-usuario', ( payload: { name: string }, callback: Function ) => {
-        usuariosConectados.updateUser( cliente.id, payload.name )
+        usuariosConectados.updateUser( cliente.id, payload.name );
+        io.emit( 'usuarios-activos', usuariosConectados.getList( ) );
         callback({
             ok:true,
             mensaje: `Usuario ${ payload.name } configurado`
         });
         // io.emit(  );
+    })
+}
+
+// obtener usuarios
+export const getUsersByOne = ( cliente: Socket, io: socketIO.Server ) => {
+    cliente.on( 'obtener-usuarios', ( ) => {
+        io.to( cliente.id ).emit( 'usuarios-activos', usuariosConectados.getList( ) );
+        // const users = usuariosConectados.getList( );
+        // let byOne = null;
+        // let exceptMe = users.filter( ( one: any ) => {
+        //     if ( one.name !== payload.name ) {
+        //         return one;
+        //     } else {
+        //         byOne = one;
+        //     }
+        // });
+        // callback({
+        //     ok:true,
+        //     exceptMe
+        // });
+        // io.in( byOne.id ).emit( '' );
     })
 }
